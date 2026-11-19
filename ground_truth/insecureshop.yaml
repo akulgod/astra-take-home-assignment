@@ -1,0 +1,122 @@
+# Ground-truth vulnerabilities for InsecureShop.
+# Source: https://github.com/hax0rgb/InsecureShop#vulnerabilities (19 entries, verbatim titles).
+# `category` is our normalized taxonomy (also the Finding.type enum in src/schema.py).
+# `component` is the primary class/file/manifest-or-resource location, used by the matcher.
+# This file is DATA. Nothing in src/ references it by name — config points here.
+
+app: InsecureShop
+package: com.insecureshop
+vulnerabilities:
+  - id: GT-01
+    title: "Hardcoded Credentials"
+    category: hardcoded_credentials
+    component: "com.insecureshop.util.Util / LoginActivity"
+    description: "Credentials are hardcoded somewhere that can be used to login to the application."
+
+  - id: GT-02
+    title: "Insufficient URL Validation"
+    category: webview_url_validation
+    component: "com.insecureshop.WebViewActivity (deeplink)"
+    description: "Possible to load any arbitrary URL in webview via Deeplink."
+
+  - id: GT-03
+    title: "Weak Host Validation Check"
+    category: webview_host_validation
+    component: "com.insecureshop.WebViewActivity / util.CustomWebViewClient"
+    description: "Possible to bypass host validation check to load any arbitrary URL in webview."
+
+  - id: GT-04
+    title: "Arbitrary Code Execution"
+    category: arbitrary_code_execution
+    component: "com.insecureshop.WebViewActivity (createPackageContext)"
+    description: "Arbitrary Code Execution via third-party package contexts."
+
+  - id: GT-05
+    title: "Access to Protected Components"
+    category: intent_redirection
+    component: "com.insecureshop.ChooserActivity / SendingDataViaActionActivity"
+    description: "The app takes an embedded Intent and passes it to method like startActivity. This allows any third party app to launch any protected component."
+
+  - id: GT-06
+    title: "Unprotected Data URIs"
+    category: webview_url_validation
+    component: "com.insecureshop.WebView2Activity (loadUrl)"
+    description: "The untrusted URI's passed via loadUrl method allows attackers to pass arbitrary URL in webview."
+
+  - id: GT-07
+    title: "Theft of Arbitrary Files"
+    category: file_theft
+    component: "com.insecureshop.ChooserActivity"
+    description: "Possible to steal files from app's local storage via ChooserActivity."
+
+  - id: GT-08
+    title: "Using Components with Known Vulnerabilities"
+    category: vulnerable_dependency
+    component: "third-party library (dependency)"
+    description: "Identify the vulnerable components or libraries used in the app that can allow you to exfiltrate local files to remote domain."
+
+  - id: GT-09
+    title: "Insecure Broadcast Receiver"
+    category: insecure_broadcast
+    component: "com.insecureshop.ProductListActivity / broadcast.ProductDetailBroadCast"
+    description: "An exported activity registers a broadcast during onCreate method execution. An attacker can trigger this broadcast and provide arbitrary URL in 'web_url' parameter."
+
+  - id: GT-10
+    title: "AWS Cognito Misconfiguration"
+    category: cloud_misconfig
+    component: "com.insecureshop.util.Util / resources"
+    description: "The misconfigured AWS cognito instance can be used to access AWS S3 bucket."
+
+  - id: GT-11
+    title: "Insecure use of FilePaths in FileProvider"
+    category: fileprovider_misconfig
+    component: "contentProvider.InsecureshopFileProvider / res/xml file paths"
+    description: "The use of wide file sharing declaration can be used to access root directory via content Provider."
+
+  - id: GT-12
+    title: "Use of Implicit intent to send a broadcast with sensitive data"
+    category: implicit_intent_leak
+    component: "com.insecureshop (implicit broadcast)"
+    description: "The use of Implicit intent can allow third-party apps to steal credentials."
+
+  - id: GT-13
+    title: "Intercepting Implicit intent to load arbitrary URL"
+    category: implicit_intent_leak
+    component: "com.insecureshop (implicit intent -> webview)"
+    description: "The use of Implicit intent can allow third-party apps to load any arbitrary URL in webview."
+
+  - id: GT-14
+    title: "Insecure Implementation of SetResult in exported Activity"
+    category: insecure_setresult
+    component: "com.insecureshop.ResultActivity"
+    description: "The insecure implementation used in ResultActivity can be used to access arbitrary content providers."
+
+  - id: GT-15
+    title: "Insecure Content Provider"
+    category: insecure_content_provider
+    component: "contentProvider.InsecureShopProvider"
+    description: "The content provider can be accessed by any third-party app to steal user credentials."
+
+  - id: GT-16
+    title: "Lack of SSL Certificate Validation"
+    category: ssl_validation
+    component: "com.insecureshop.util.CustomWebViewClient (onReceivedSslError)"
+    description: "The unsafe implementation of OnReceived SSL Error can be used to eavesdrop all the traffic loaded in webview."
+
+  - id: GT-17
+    title: "Insecure Webview Properties Enabled"
+    category: webview_misconfig
+    component: "com.insecureshop.WebViewActivity (WebSettings)"
+    description: "Insecure Webview properties are enabled that can allow third-party apps to exfiltrate local data to remote domain."
+
+  - id: GT-18
+    title: "Insecure Data Storage"
+    category: insecure_storage
+    component: "com.insecureshop.util.Prefs"
+    description: "The app stores user credentials locally without encrypting them."
+
+  - id: GT-19
+    title: "Insecure Logging"
+    category: insecure_logging
+    component: "com.insecureshop (logcat)"
+    description: "User credentials are leaked in logcat. Only attackers with physical access to the device can access this information."

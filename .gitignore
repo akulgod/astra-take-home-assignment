@@ -1,0 +1,26 @@
+# Secrets
+.env
+*.env
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
+# Large inputs / generated artifacts (kept out of VCS)
+*.apk
+*.aab
+*.xapk
+insecureshop-src/
+decompiled/
+cache*/
+runs*/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.log

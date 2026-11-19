@@ -1,0 +1,14 @@
+# Core
+pydantic>=2.7
+pyyaml>=6.0
+python-dotenv>=1.0
+tenacity>=8.2        # retry/backoff on 429s and parse failures
+
+# Model SDKs (all optional at runtime; loaded lazily per config)
+anthropic>=0.40      # teacher: Claude
+openai>=1.40         # teacher: OpenAI, AND used for any OpenAI-compatible endpoint
+                     # (Groq, Gemini-OpenAI-compat all go through the openai client via base_url)
+
+# Dev (optional)
+# ruff>=0.5
+# pytest>=8.0

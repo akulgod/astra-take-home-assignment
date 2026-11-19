@@ -1,0 +1,59 @@
+# Pipeline config. All app/model-specific settings live here — no code edits.
+
+# Model registry. `openai_compat` = any OpenAI-compatible endpoint (swap = base_url + key).
+models:
+  sol:                                      # teacher — OpenAI GPT-6.2 Sol
+    provider: openai_compat
+    model: gpt-6.2-sol
+    base_url: https://api.openai.com/v1
+    api_key_env: OPENAI_API_KEY
+    max_tokens: 4096
+    tokens_param: max_completion_tokens     # newer OpenAI models require this name
+    temperature: null                       # reasoning-tier default
+
+  openrouter-oss-20b:                       # student — open gpt-oss-20b
+    provider: openai_compat
+    model: openai/gpt-oss-20b
+    base_url: https://openrouter.ai/api/v1
+    api_key_env: OPENROUTER_API_KEY
+    max_tokens: 4096
+    temperature: 0.4                        # >0 so eval `repeats` vary
+
+# Which model plays each role.
+roles:
+  teacher: sol
+  student: openrouter-oss-20b
+
+# Target app: a decompiled dir or an .apk (ingest handles both).
+app:
+  path: ./insecureshop-src
+  exclude_package_prefixes:                 # libraries + generated code
+    - androidx
+    - android
+    - kotlin
+    - kotlinx
+    - com.google
+    - com.squareup
+    - okhttp3
+    - okio
+  exclude_file_patterns:
+    - "R.java"
+    - "BR.java"
+    - "BuildConfig.java"
+    - "databinding/"
+    - "DataBinderMapperImpl"
+
+# Evaluation.
+eval:
+  reference: ground_truth_file              # or `teacher_findings` for unseen-APK mode
+  ground_truth_file: ./ground_truth/insecureshop.yaml
+  repeats: 3                                # average out student noise
+  match:
+    require_same_category: true             # strict: same category AND shared class name
+
+# Runtime.
+run:
+  cache_dir: ./cache                        # disk cache keyed by hash(model, prompt)
+  output_dir: ./runs
+  max_files_per_batch: 1                    # 1 = per-file (best recall); raise to batch large apps
+  max_chunk_chars: 20000
